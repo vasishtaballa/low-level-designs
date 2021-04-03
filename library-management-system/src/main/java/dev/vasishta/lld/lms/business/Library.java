@@ -4,6 +4,7 @@ import dev.vasishta.lld.lms.model.Address;
 import dev.vasishta.lld.lms.model.Catalog;
 import dev.vasishta.lld.lms.model.Librarian;
 import dev.vasishta.lld.lms.model.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Library {
     private int id;
     private String name;
