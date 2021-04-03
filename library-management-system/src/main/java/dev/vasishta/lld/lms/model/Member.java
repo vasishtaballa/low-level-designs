@@ -3,8 +3,10 @@ package dev.vasishta.lld.lms.model;
 import dev.vasishta.lld.lms.enums.MembershipStatus;
 import dev.vasishta.lld.lms.enums.ReservationStatus;
 import dev.vasishta.lld.lms.exception.LMSException;
+import dev.vasishta.lld.lms.service.BookLendingService;
 import dev.vasishta.lld.lms.service.FineService;
 import dev.vasishta.lld.lms.service.MemberOperations;
+import dev.vasishta.lld.lms.service.ReservationService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,10 +25,11 @@ import java.util.List;
 public class Member extends Account implements MemberOperations {
     private MembershipStatus membershipStatus;
     private Date dateOfMembership;
-    private List<LendBook> lendBooks;
-    private List<ReserveBook> reserveBooks;
 
     private FineService fineService;
+
+    private BookLendingService bookLendingService;
+    private ReservationService reservationService;
 
     @Override
     public boolean reserveBook(Book book) {
@@ -38,7 +41,7 @@ public class Member extends Account implements MemberOperations {
             reserveBook.setBook(book);
             reserveBook.setMember(this);
             reserveBook.setReservationStatus(ReservationStatus.CONFIRMED);
-            reserveBooks.add(reserveBook);
+            reservationService.reserveBook(this, book);
         } catch (Exception ex) {
             throw new LMSException("Exception occurred while reserving a book");
         }
@@ -83,6 +86,8 @@ public class Member extends Account implements MemberOperations {
         // Check if current date is greater than due date. If so, collect fine
         if (lendBookObj.getDueDate().compareTo(Calendar.getInstance().getTime()) > 0)
             return calculateAndPayFine(lendBookObj);
+        // Check if this book is reserved by anybody. If so, send notification to them that the book is available
+        reservationService.checkForAnyReservation(book);
         return lendBooks.remove(lendBookObj);
     }
 
@@ -93,6 +98,5 @@ public class Member extends Account implements MemberOperations {
         double fineAmount = period.getDays() * fineService.FINE_PER_DAY;
         return fineService.collectFine(lendBookObj, fineAmount);
     }
-
 
 }
