@@ -33,7 +33,7 @@ public class Member extends Account implements MemberOperations {
 
     @Override
     public boolean reserveBook(Book book) {
-        if (reserveBooks.size() >= 5)
+        if (reservationService.getReservations(this).size() >= 5)
             throw new LMSException("You can't reserve more than 5 books, Please cancel some other reservation and try again later");
         try {
             ReserveBook reserveBook = new ReserveBook();
@@ -50,6 +50,7 @@ public class Member extends Account implements MemberOperations {
 
     @Override
     public boolean cancelReservation(Book book) {
+        List<ReserveBook> reserveBooks = reservationService.getReservations(this);
         if (reserveBooks == null || reserveBooks.isEmpty())
             throw new LMSException("You have no active reservations");
         ReserveBook bookObj = reserveBooks.stream()
@@ -63,6 +64,7 @@ public class Member extends Account implements MemberOperations {
 
     @Override
     public boolean lendBook(Book book) {
+        List<LendBook> lendBooks = bookLendingService.getLentBooks(this);
         if (lendBooks.size() >= 5)
             throw new LMSException("You can't lend more than 5 books at a time, Please return some other book to lend this book");
         Calendar calendar = Calendar.getInstance();
@@ -77,6 +79,7 @@ public class Member extends Account implements MemberOperations {
 
     @Override
     public boolean returnBook(Book book) {
+        List<LendBook> lendBooks = bookLendingService.getLentBooks(this);
         if (lendBooks == null || lendBooks.isEmpty())
             throw new LMSException("You have not checked out any books to do this operation");
         LendBook lendBookObj = lendBooks.stream()

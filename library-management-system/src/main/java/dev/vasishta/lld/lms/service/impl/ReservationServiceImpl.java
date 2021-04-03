@@ -26,4 +26,9 @@ public class ReservationServiceImpl implements ReservationService {
     public boolean reserveBook(Member member, Book book) {
         return false;
     }
+
+    @Override
+    public List<ReserveBook> getReservations(Member member) {
+        return null;
+    }
 }
