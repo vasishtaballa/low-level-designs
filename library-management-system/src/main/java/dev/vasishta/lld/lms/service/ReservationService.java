@@ -7,9 +7,12 @@ import dev.vasishta.lld.lms.model.ReserveBook;
 import java.util.List;
 
 public interface ReservationService {
-    boolean checkForAnyReservation(Book book);
+
+    Member checkForAnyReservation(Book book);
 
     boolean reserveBook(Member member, Book book);
 
     List<ReserveBook> getReservations(Member member);
+
+    boolean cancelReservation(Member member, Book book);
 }

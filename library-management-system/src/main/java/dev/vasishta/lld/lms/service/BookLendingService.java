@@ -10,4 +10,6 @@ public interface BookLendingService {
     boolean lendBook(Member member, Book book);
 
     List<LendBook> getLentBooks(Member member);
+
+    boolean returnBook(Member member, Book book);
 }
